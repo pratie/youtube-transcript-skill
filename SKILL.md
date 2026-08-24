@@ -9,7 +9,7 @@ license: Proprietary API; this skill file is freely redistributable.
 Base URL: `https://bulktranscripts.co`
 
 All endpoints are plain GET returning JSON. Keyless calls draw from a free
-allowance (50 transcripts per public IP). If `BULKTRANSCRIPTS_API_KEY` is set,
+allowance (30 transcripts per public IP). If `BULKTRANSCRIPTS_API_KEY` is set,
 send it on every request:
 
 ```bash
