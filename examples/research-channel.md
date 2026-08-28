@@ -29,6 +29,7 @@ curl -s "https://bulktranscripts.co/api/v1/transcript?video=VIDEO_ID&segments=0"
 - Topic discovery across all of YouTube: `GET /api/v1/search?q=...` — add
   `type=channel` to find channels worth following instead of videos.
 
-**Cost note**: channel search costs 1 credit; each uncached transcript costs 1
-credit; transcripts anyone has fetched before are free. Show the user the video
-count before bulk-fetching.
+**Cost note**: channel search costs 1 credit. A transcript costs 1 credit the
+first time it enters *this account's* library; your own repeat reads are free
+in any format. A transcript someone else fetched is not free for you. Show the
+user the video count before bulk-fetching.

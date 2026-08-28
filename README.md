@@ -4,9 +4,10 @@ Give your AI agent full YouTube access — transcripts, search (videos, channels
 playlists), search-inside-a-channel, playlist extraction, and free new-upload
 tracking — via the [BulkTranscripts](https://bulktranscripts.co) API.
 
-**No signup.** The skill works immediately on the free tier (30 transcripts per
-IP). A one-time credit pack's license key unlocks more; credits never expire
-and cached transcripts are always free.
+**No signup.** The skill works immediately on the free tier (30 transcript
+additions, limited by device and public IP). A one-time credit pack's license
+key unlocks more; credits never expire, and once a transcript is in your
+library you can re-read and re-export it for free.
 
 ## Install
 
