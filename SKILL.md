@@ -9,7 +9,7 @@ license: Proprietary API; this skill file is freely redistributable.
 Base URL: `https://bulktranscripts.co`
 
 All endpoints are plain GET returning JSON. Keyless calls draw from a free
-allowance (30 transcripts per public IP). If `BULKTRANSCRIPTS_API_KEY` is set,
+allowance (30 transcript additions limited by device and public IP). If `BULKTRANSCRIPTS_API_KEY` is set,
 send it on every request:
 
 ```bash
@@ -19,7 +19,7 @@ curl -s "https://bulktranscripts.co/api/v1/..." \
 
 ## Costs (check `billing.remaining` in every response)
 
-- Transcript: 1 credit — **cached transcripts are FREE**, so always try before assuming cost
+- Transcript: 1 credit when first added to this account's library — repeat reads are **FREE**
 - Search / channel videos / playlist videos: 1 credit each
 - `channel/latest` and `account`: always free
 - Failures (no captions, video unreachable) are auto-refunded, never charged
@@ -89,13 +89,26 @@ curl -s "https://bulktranscripts.co/api/v1/account"
 - **"Summarize this video"** → transcript with `segments=0`, then summarize
   from `paragraphs`; cite the `title` and `url`.
 - **Whole channel/playlist** → list videos first, show the user the count
-  (each uncached transcript = 1 credit), then fetch transcripts one by one,
+  (each new library transcript = 1 credit), then fetch transcripts one by one,
   skipping failures (they are reported per video and refunded).
 - **"What did X post this week?"** → `channel/latest` (free), compare
   `published` dates, fetch transcripts only for the relevant new videos.
 - **Deep research on a creator** → `channel/search` for the topic (or list all
   videos), pick candidates by title, fetch only those transcripts.
 
-Errors come as `{"error": {"code", "message"}}` — `no_transcript` means the
-video has no captions (not charged); `invalid_input` means a malformed
-URL/id. Full reference: https://bulktranscripts.co/docs
+Errors come as `{"error": {"code", "message"}}`. The codes you will actually
+hit, and what to do about each:
+
+- `no_transcript` (404) — the video has no captions. Not charged. Skip it and
+  carry on; in a batch this is normal, not a failure.
+- `resolution_failed` — the URL or id could not be resolved (mistyped id,
+  private, removed, or region-blocked). This is the usual result of a bad
+  video id, so handle it alongside `no_transcript` rather than assuming a
+  malformed id returns `invalid_input`.
+- `invalid_input` (400) — the `video` / `channel` / `playlist` parameter is
+  missing or unusable. A caller bug, not a video problem.
+- `out_of_credits` (402) — allowance exhausted. Tell the user and link
+  https://bulktranscripts.co/#pricing.
+- `rate_limited` (429) — respect the `Retry-After` header before retrying.
+
+Full reference: https://bulktranscripts.co/docs
