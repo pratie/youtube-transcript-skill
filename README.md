@@ -44,7 +44,7 @@ export BULKTRANSCRIPTS_API_KEY=your_license_key
 
 | Capability | Cost |
 |---|---|
-| Fetch a video's transcript (clean text, paragraphs, timestamps) | 1 credit · cached = **free** |
+| Fetch a video's transcript (clean text, paragraphs, timestamps) | 1 credit first time · your own repeat reads **free** |
 | Search YouTube — videos, channels, or playlists | 1 credit |
 | Search inside one channel's uploads | 1 credit |
 | List a channel's videos (up to 1,000) | 1 credit |

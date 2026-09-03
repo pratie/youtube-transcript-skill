@@ -13,8 +13,10 @@
 curl -s "https://bulktranscripts.co/api/v1/channel/latest?channel=@mkbhd"
 ```
 
-2. Compares each result's `published` timestamp against the last check (keep a
-   cursor in a scratch file, e.g. `~/.cache/yt-monitor/mkbhd.last`).
+2. Compares the returned video ids against the ones already seen (keep them in
+   a scratch file, e.g. `~/.cache/yt-monitor/mkbhd.seen`). Use `published` as a
+   tie-breaker when present; it can be null when the response says
+   `"source": "listing"`.
 3. Only for genuinely new videos, fetches the transcript (1 credit) and
    summarizes:
 

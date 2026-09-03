@@ -76,8 +76,10 @@ curl -s "https://bulktranscripts.co/api/v1/playlist/videos?playlist=PLAYLIST_ID_
 ```bash
 curl -s "https://bulktranscripts.co/api/v1/channel/latest?channel=@HANDLE"
 ```
-Returns up to 15 recent videos with `published` timestamps. Poll this freely;
-only spend credits on videos that are actually new.
+Returns up to 15 recent videos. Poll this freely; only spend credits on videos
+that are actually new. Diff on video `id`, not on `published`: when YouTube's
+feed is unavailable the response says `"source": "listing"` and `published`
+can be null.
 
 ### Balance
 ```bash
@@ -91,8 +93,9 @@ curl -s "https://bulktranscripts.co/api/v1/account"
 - **Whole channel/playlist** → list videos first, show the user the count
   (each new library transcript = 1 credit), then fetch transcripts one by one,
   skipping failures (they are reported per video and refunded).
-- **"What did X post this week?"** → `channel/latest` (free), compare
-  `published` dates, fetch transcripts only for the relevant new videos.
+- **"What did X post this week?"** → `channel/latest` (free), compare video
+  ids against what you have seen (use `published` when present), fetch
+  transcripts only for the relevant new videos.
 - **Deep research on a creator** → `channel/search` for the topic (or list all
   videos), pick candidates by title, fetch only those transcripts.
 
@@ -101,14 +104,16 @@ hit, and what to do about each:
 
 - `no_transcript` (404) — the video has no captions. Not charged. Skip it and
   carry on; in a batch this is normal, not a failure.
-- `resolution_failed` — the URL or id could not be resolved (mistyped id,
-  private, removed, or region-blocked). This is the usual result of a bad
-  video id, so handle it alongside `no_transcript` rather than assuming a
-  malformed id returns `invalid_input`.
+- `resolution_failed` (400) — a well-formed id or URL that could not be
+  resolved (nonexistent, private, removed, or region-blocked). Handle it
+  alongside `no_transcript`: skip the video and carry on.
 - `invalid_input` (400) — the `video` / `channel` / `playlist` parameter is
-  missing or unusable. A caller bug, not a video problem.
+  missing, not a YouTube/TikTok reference, or otherwise malformed. A caller
+  bug, not a video problem.
 - `out_of_credits` (402) — allowance exhausted. Tell the user and link
   https://bulktranscripts.co/#pricing.
 - `rate_limited` (429) — respect the `Retry-After` header before retrying.
+  Limits are per public IP: 120 requests/min overall, 30/min under `/api/v1/`
+  (cache hits and `/account` count too), so pace bulk fetches at under 30/min.
 
 Full reference: https://bulktranscripts.co/docs
