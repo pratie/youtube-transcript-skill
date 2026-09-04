@@ -33,6 +33,12 @@ curl -fsSL https://bulktranscripts.co/skill.md \
   -o ~/.codex/skills/youtube-transcripts/SKILL.md
 ```
 
+**OpenClaw** (published on [ClawHub](https://clawhub.ai/pratie/skills/bulktranscripts-youtube))
+
+```bash
+openclaw skills install @pratie/bulktranscripts-youtube
+```
+
 **Any SKILL.md-compatible agent** — copy [SKILL.md](SKILL.md) into your agent's
 skills directory. With purchased credits, set:
 
