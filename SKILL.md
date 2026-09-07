@@ -107,6 +107,11 @@ hit, and what to do about each:
 - `resolution_failed` (400) — a well-formed id or URL that could not be
   resolved (nonexistent, private, removed, or region-blocked). Handle it
   alongside `no_transcript`: skip the video and carry on.
+- `playlist_private` (400) — YouTube says the playlist does not exist, which is
+  also what it says about a *private* playlist. Playlist ids come in several
+  lengths (13, 18, 26, 34) and all work, so do not second-guess the id: tell
+  the user to open the playlist on YouTube → Edit → Visibility → Unlisted,
+  then retry. Not charged.
 - `invalid_input` (400) — the `video` / `channel` / `playlist` parameter is
   missing, not a YouTube/TikTok reference, or otherwise malformed. A caller
   bug, not a video problem.
