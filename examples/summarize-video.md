@@ -10,7 +10,8 @@
 1. Fetches the transcript (keeps timestamps for quoting):
 
 ```bash
-curl -s "https://bulktranscripts.co/api/v1/transcript?video=VIDEO_ID"
+curl -s "https://bulktranscripts.co/api/v1/transcript?video=VIDEO_ID" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
 ```
 
 2. Reads `paragraphs[]` for the summary (silence-grouped — better section

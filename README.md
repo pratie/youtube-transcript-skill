@@ -4,10 +4,13 @@ Give your AI agent full YouTube access — transcripts, search (videos, channels
 playlists), search-inside-a-channel, playlist extraction, and free new-upload
 tracking — via the [BulkTranscripts](https://bulktranscripts.co) API.
 
-**No signup.** The skill works immediately on the free tier (30 transcript
-additions, limited by device and public IP). A one-time credit pack's license
-key unlocks more; credits never expire, and once a transcript is in your
-library you can re-read and re-export it for free.
+**One free API key.** Sign in with Google at
+[bulktranscripts.co/app?tab=mcp](https://bulktranscripts.co/app?tab=mcp), open
+the **Connect AI** tab, and hit **Create key** in the **API keys** card — free,
+30 credits included, no card. Every request carries that key. A one-time credit
+pack tops up the same account, so the key keeps working; credits never expire,
+and once a transcript is in your library you can re-read and re-export it for
+free.
 
 ## Install
 
@@ -40,10 +43,10 @@ openclaw skills install @pratie/bulktranscripts-youtube
 ```
 
 **Any SKILL.md-compatible agent** — copy [SKILL.md](SKILL.md) into your agent's
-skills directory. With purchased credits, set:
+skills directory. Then set your key (required):
 
 ```bash
-export BULKTRANSCRIPTS_API_KEY=your_license_key
+export BULKTRANSCRIPTS_API_KEY=bt_ak_your_key
 ```
 
 ## What it can do

@@ -10,14 +10,16 @@
 1. Searches inside the channel instead of listing the whole archive:
 
 ```bash
-curl -s "https://bulktranscripts.co/api/v1/channel/search?channel=@TED&q=artificial+intelligence&limit=10"
+curl -s "https://bulktranscripts.co/api/v1/channel/search?channel=@TED&q=artificial+intelligence&limit=10" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
 ```
 
 2. Picks the best candidates by title, then fetches only those transcripts
    (`segments=0` — quotes aren't needed for comparison):
 
 ```bash
-curl -s "https://bulktranscripts.co/api/v1/transcript?video=VIDEO_ID&segments=0"
+curl -s "https://bulktranscripts.co/api/v1/transcript?video=VIDEO_ID&segments=0" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
 ```
 
 3. Compares the `paragraphs` of each and answers with per-video citations.

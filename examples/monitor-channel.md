@@ -7,10 +7,12 @@
 
 **What the agent does**
 
-1. Polls the latest-uploads endpoint — **free, no credit ever**:
+1. Polls the latest-uploads endpoint — **free, no credit ever** (the API key is
+   still required):
 
 ```bash
-curl -s "https://bulktranscripts.co/api/v1/channel/latest?channel=@mkbhd"
+curl -s "https://bulktranscripts.co/api/v1/channel/latest?channel=@mkbhd" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
 ```
 
 2. Compares the returned video ids against the ones already seen (keep them in
@@ -21,7 +23,8 @@ curl -s "https://bulktranscripts.co/api/v1/channel/latest?channel=@mkbhd"
    summarizes:
 
 ```bash
-curl -s "https://bulktranscripts.co/api/v1/transcript?video=NEW_VIDEO_ID&segments=0"
+curl -s "https://bulktranscripts.co/api/v1/transcript?video=NEW_VIDEO_ID&segments=0" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
 ```
 
 **Why this pattern**
