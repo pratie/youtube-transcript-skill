@@ -20,6 +20,21 @@ free.
 npx skills add pratie/youtube-transcript-skill
 ```
 
+That installs the full skill plus the focused ones below; pick only what you
+need with `--skill <name>`.
+
+| Skill | Use it for |
+| --- | --- |
+| [youtube-transcripts](skills/youtube-transcripts/SKILL.md) | Everything in one skill: transcripts, search, channels, playlists, upload tracking |
+| [youtube-transcript](skills/youtube-transcript/SKILL.md) | One video to clean text, timestamps, SRT/VTT or Markdown |
+| [youtube-channel-transcripts](skills/youtube-channel-transcripts/SKILL.md) | Every video on a channel, or search inside one channel |
+| [youtube-playlist-transcripts](skills/youtube-playlist-transcripts/SKILL.md) | A playlist or lecture series, in order |
+| [youtube-search](skills/youtube-search/SKILL.md) | Find videos, channels or playlists, then read them |
+| [youtube-upload-monitor](skills/youtube-upload-monitor/SKILL.md) | Free polling for new uploads, transcripts only for what is new |
+
+The focused skills are generated from the full one by
+`python3 scripts/build_skills.py`, so the API text stays identical everywhere.
+
 **Claude Code**
 
 ```bash
@@ -42,7 +57,7 @@ curl -fsSL https://bulktranscripts.co/skill.md \
 openclaw skills install @pratie/bulktranscripts-youtube
 ```
 
-**Any SKILL.md-compatible agent** — copy [SKILL.md](SKILL.md) into your agent's
+**Any SKILL.md-compatible agent** — copy [SKILL.md](skills/youtube-transcripts/SKILL.md) into your agent's
 skills directory. Then set your key (required):
 
 ```bash
@@ -74,5 +89,9 @@ The same engine is a hosted MCP server — no local process, seven tools:
 claude mcp add --transport http bulktranscripts https://bulktranscripts.co/mcp
 ```
 
-Docs: https://bulktranscripts.co/docs · OpenAPI: https://bulktranscripts.co/openapi.json
-· Skill page: https://bulktranscripts.co/youtube-transcript-agent-skill
+[Docs](https://bulktranscripts.co/docs) ·
+[OpenAPI spec](https://bulktranscripts.co/openapi.json) ·
+[Skill page](https://bulktranscripts.co/youtube-transcript-agent-skill) ·
+[MCP server setup](https://bulktranscripts.co/youtube-mcp-server) ·
+[YouTube transcript API](https://bulktranscripts.co/youtube-transcript-api) ·
+[Pricing](https://bulktranscripts.co/#pricing)
