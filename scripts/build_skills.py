@@ -30,7 +30,8 @@ EP = {
     "channel_videos": between("### List a channel", "### List a playlist"),
     "playlist": between("### List a playlist", "### Newest uploads"),
     "latest": between("### Newest uploads", "### Balance"),
-    "account": between("### Balance", "## Playbooks"),
+    "account": between("### Balance", "### Whole channel or playlist"),
+    "bulk": between("### Whole channel or playlist", "## Playbooks"),
 }
 errors_block = between("Errors come as", "Full reference:")
 intro_err, *items = re.split(r"\n(?=- `)", errors_block.strip())
@@ -57,20 +58,20 @@ SKILLS = [
     dict(
         name="youtube-channel-transcripts",
         title="Transcripts for a whole YouTube channel",
-        desc="List every video on a YouTube channel (up to 1,000) and fetch their transcripts in bulk via the BulkTranscripts API, or search inside one channel for a topic. Use when the user wants all transcripts from a creator, a knowledge base or RAG corpus built from a channel, or research on what a creator has said. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).",
+        desc="Fetch every transcript on a YouTube channel (up to 1,000) as one background bulk job via the BulkTranscripts API, list a channel's videos, or search inside one channel for a topic. Use when the user wants all transcripts from a creator, a knowledge base or RAG corpus built from a channel, or research on what a creator has said. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).",
         lead="List a channel's videos, then pull the transcripts you need",
-        eps=["channel_videos", "channel_search", "transcript", "account"],
+        eps=["bulk", "channel_videos", "channel_search", "transcript", "account"],
         errs=["no_transcript", "resolution_failed"],
-        play="- **Whole channel** → list videos first, show the user the count (each new\n  library transcript = 1 credit), then fetch transcripts one by one, skipping\n  failures (they are reported per video and refunded).\n- **Deep research on a creator** → `channel/search` for the topic, pick\n  candidates by title, fetch only those transcripts.\n",
+        play="- **Whole channel** → start a bulk job with the channel URL, tell the user\n  the `videos_found` count (each new library transcript = 1 credit), poll at\n  the pace `check_again_in_seconds` asks for, then read what you need from the\n  library for free.\n- **Deep research on a creator** → `channel/search` for the topic, pick\n  candidates by title, fetch only those transcripts.\n",
     ),
     dict(
         name="youtube-playlist-transcripts",
         title="Transcripts for a YouTube playlist",
-        desc="List a YouTube playlist in order and fetch the transcript of every video via the BulkTranscripts API. Use when the user shares a playlist link, wants a lecture series or course turned into study notes, or needs playlist transcripts as text. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).",
+        desc="Fetch every transcript of a YouTube playlist as one background bulk job via the BulkTranscripts API, or list the playlist in order and fetch videos one by one. Use when the user shares a playlist link, wants a lecture series or course turned into study notes, or needs playlist transcripts as text. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).",
         lead="List a playlist in order, then pull each video's transcript",
-        eps=["playlist", "transcript", "account"],
+        eps=["bulk", "playlist", "transcript", "account"],
         errs=["playlist_private", "no_transcript", "resolution_failed"],
-        play="- **Course or lecture series** → list the playlist, show the user the count\n  (each new library transcript = 1 credit), fetch transcripts in playlist\n  order with `segments=0`, skip failures (refunded), then build notes per video.\n",
+        play="- **Course or lecture series** → start a bulk job with the playlist URL,\n  tell the user the `videos_found` count (each new library transcript = 1\n  credit), poll at the pace `check_again_in_seconds` asks for, then read the\n  transcripts in playlist order from the library for free and build notes.\n",
     ),
     dict(
         name="youtube-search",

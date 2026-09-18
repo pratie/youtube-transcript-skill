@@ -1,6 +1,6 @@
 ---
 name: youtube-channel-transcripts
-description: List every video on a YouTube channel (up to 1,000) and fetch their transcripts in bulk via the BulkTranscripts API, or search inside one channel for a topic. Use when the user wants all transcripts from a creator, a knowledge base or RAG corpus built from a channel, or research on what a creator has said. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).
+description: Fetch every transcript on a YouTube channel (up to 1,000) as one background bulk job via the BulkTranscripts API, list a channel's videos, or search inside one channel for a topic. Use when the user wants all transcripts from a creator, a knowledge base or RAG corpus built from a channel, or research on what a creator has said. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).
 license: Proprietary API; this skill file is freely redistributable.
 ---
 
@@ -44,6 +44,36 @@ API key working.
 
 ## Endpoints
 
+### Whole channel or playlist in one job (listing free, 1 credit per transcript)
+```bash
+curl -s -X POST "https://bulktranscripts.co/api/v1/bulk" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://www.youtube.com/playlist?list=PLAYLIST_ID", "max_videos": 200}'
+```
+`url` takes a playlist, a channel (`@handle` or URL) or a single video; `max_videos`
+caps the job at up to 1,000. Returns `202` at once with `run_id`, `status`,
+`videos_found` (null until a large channel has been listed), the counts and
+`check_again_in_seconds`. The server keeps fetching after the response, into
+this account's library. Poll no sooner than `check_again_in_seconds`:
+```bash
+curl -s "https://bulktranscripts.co/api/v1/bulk/RUN_ID" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
+```
+`status` ends as `completed`, or `stopped` after a server restart (start the
+same URL again; everything already fetched is free). `quota` counts videos not
+attempted because credits ran out; `skipped` counts videos without captions.
+Then page the outcomes, metadata only, passing `next_cursor` back as `cursor`:
+```bash
+curl -s "https://bulktranscripts.co/api/v1/bulk/RUN_ID/results?limit=100" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
+```
+Each item has `video_id`, `title`, `channel`, `duration`, `word_count` and
+`status` (`ok`, `cached`, or `error` with a code). Every ok or cached video is
+in the library, so `/transcript?video=ID` returns its text without a credit.
+Two jobs per account at a time. Prefer a job over one-by-one fetches for
+anything larger than about 20 videos.
+
 ### List a channel's videos (1 credit, up to 1000)
 ```bash
 curl -s "https://bulktranscripts.co/api/v1/channel/videos?channel=@HANDLE&limit=100" \
@@ -84,9 +114,10 @@ curl -s "https://bulktranscripts.co/api/v1/account" \
 
 ## Playbook
 
-- **Whole channel** → list videos first, show the user the count (each new
-  library transcript = 1 credit), then fetch transcripts one by one, skipping
-  failures (they are reported per video and refunded).
+- **Whole channel** → start a bulk job with the channel URL, tell the user
+  the `videos_found` count (each new library transcript = 1 credit), poll at
+  the pace `check_again_in_seconds` asks for, then read what you need from the
+  library for free.
 - **Deep research on a creator** → `channel/search` for the topic, pick
   candidates by title, fetch only those transcripts.
 

@@ -1,6 +1,6 @@
 ---
 name: youtube-playlist-transcripts
-description: List a YouTube playlist in order and fetch the transcript of every video via the BulkTranscripts API. Use when the user shares a playlist link, wants a lecture series or course turned into study notes, or needs playlist transcripts as text. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).
+description: Fetch every transcript of a YouTube playlist as one background bulk job via the BulkTranscripts API, or list the playlist in order and fetch videos one by one. Use when the user shares a playlist link, wants a lecture series or course turned into study notes, or needs playlist transcripts as text. Requires a free BulkTranscripts API key in BULKTRANSCRIPTS_API_KEY, created at https://bulktranscripts.co/app?tab=mcp (Google sign-in, 30 free credits, no card).
 license: Proprietary API; this skill file is freely redistributable.
 ---
 
@@ -44,6 +44,36 @@ API key working.
 
 ## Endpoints
 
+### Whole channel or playlist in one job (listing free, 1 credit per transcript)
+```bash
+curl -s -X POST "https://bulktranscripts.co/api/v1/bulk" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://www.youtube.com/playlist?list=PLAYLIST_ID", "max_videos": 200}'
+```
+`url` takes a playlist, a channel (`@handle` or URL) or a single video; `max_videos`
+caps the job at up to 1,000. Returns `202` at once with `run_id`, `status`,
+`videos_found` (null until a large channel has been listed), the counts and
+`check_again_in_seconds`. The server keeps fetching after the response, into
+this account's library. Poll no sooner than `check_again_in_seconds`:
+```bash
+curl -s "https://bulktranscripts.co/api/v1/bulk/RUN_ID" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
+```
+`status` ends as `completed`, or `stopped` after a server restart (start the
+same URL again; everything already fetched is free). `quota` counts videos not
+attempted because credits ran out; `skipped` counts videos without captions.
+Then page the outcomes, metadata only, passing `next_cursor` back as `cursor`:
+```bash
+curl -s "https://bulktranscripts.co/api/v1/bulk/RUN_ID/results?limit=100" \
+  -H "Authorization: Bearer $BULKTRANSCRIPTS_API_KEY"
+```
+Each item has `video_id`, `title`, `channel`, `duration`, `word_count` and
+`status` (`ok`, `cached`, or `error` with a code). Every ok or cached video is
+in the library, so `/transcript?video=ID` returns its text without a credit.
+Two jobs per account at a time. Prefer a job over one-by-one fetches for
+anything larger than about 20 videos.
+
 ### List a playlist in order (1 credit)
 ```bash
 curl -s "https://bulktranscripts.co/api/v1/playlist/videos?playlist=PLAYLIST_ID_OR_URL" \
@@ -76,9 +106,10 @@ curl -s "https://bulktranscripts.co/api/v1/account" \
 
 ## Playbook
 
-- **Course or lecture series** → list the playlist, show the user the count
-  (each new library transcript = 1 credit), fetch transcripts in playlist
-  order with `segments=0`, skip failures (refunded), then build notes per video.
+- **Course or lecture series** → start a bulk job with the playlist URL,
+  tell the user the `videos_found` count (each new library transcript = 1
+  credit), poll at the pace `check_again_in_seconds` asks for, then read the
+  transcripts in playlist order from the library for free and build notes.
 
 Errors come as `{"error": {"code", "message"}}`. The codes you will actually
 hit, and what to do about each:
