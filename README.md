@@ -6,7 +6,7 @@ tracking — via the [BulkTranscripts](https://bulktranscripts.co) API.
 
 **One free API key.** Sign in with Google at
 [bulktranscripts.co/app?tab=mcp](https://bulktranscripts.co/app?tab=mcp), open
-the **Connect AI** tab, and hit **Create key** in the **API keys** card — free,
+the **MCP & API** tab, and hit **Create key** in the **API keys** card — free,
 30 credits included, no card. Every request carries that key. A one-time credit
 pack tops up the same account, so the key keeps working; credits never expire,
 and once a transcript is in your library you can re-read and re-export it for
