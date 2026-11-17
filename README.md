@@ -1,13 +1,15 @@
 # YouTube Transcript Skill
 
-Give your AI agent full YouTube access — transcripts, search (videos, channels,
-playlists), search-inside-a-channel, playlist extraction, and free new-upload
-tracking — via the [BulkTranscripts](https://bulktranscripts.co) API.
+An agent skill that gives Claude Code, Codex, Cursor and any SKILL.md agent
+YouTube transcripts: one video, a playlist, or a whole channel of up to 1,000
+videos in one bulk job. It also searches YouTube, searches inside one channel,
+and tracks new uploads for free, through the
+[BulkTranscripts](https://bulktranscripts.co) API.
 
 **One free API key.** Sign in with Google at
 [bulktranscripts.co/app?tab=mcp](https://bulktranscripts.co/app?tab=mcp), open
-the **MCP & API** tab, and hit **Create key** in the **API keys** card — free,
-30 credits included, no card. Every request carries that key. A one-time credit
+the **MCP & API** tab, and hit **Create key** in the **API keys** card. It is
+free, with 30 credits included and no card. Every request carries that key. A one-time credit
 pack tops up the same account, so the key keeps working; credits never expire,
 and once a transcript is in your library you can re-read and re-export it for
 free.
@@ -57,7 +59,7 @@ curl -fsSL https://bulktranscripts.co/skill.md \
 openclaw skills install @pratie/bulktranscripts-youtube
 ```
 
-**Any SKILL.md-compatible agent** — copy [SKILL.md](skills/youtube-transcripts/SKILL.md) into your agent's
+**Any SKILL.md-compatible agent:** copy [SKILL.md](skills/youtube-transcripts/SKILL.md) into your agent's
 skills directory. Then set your key (required):
 
 ```bash
@@ -69,7 +71,8 @@ export BULKTRANSCRIPTS_API_KEY=bt_ak_your_key
 | Capability | Cost |
 |---|---|
 | Fetch a video's transcript (clean text, paragraphs, timestamps) | 1 credit first time · your own repeat reads **free** |
-| Search YouTube — videos, channels, or playlists | 1 credit |
+| Fetch a whole channel or playlist as one background bulk job (up to 1,000 videos) | 1 credit per new transcript |
+| Search YouTube for videos, channels, or playlists | 1 credit |
 | Search inside one channel's uploads | 1 credit |
 | List a channel's videos (up to 1,000) | 1 credit |
 | List a playlist in order | 1 credit |
@@ -83,7 +86,11 @@ export BULKTRANSCRIPTS_API_KEY=bt_ak_your_key
 
 ## Prefer MCP?
 
-The same engine is a hosted MCP server — no local process, seven tools:
+The same engine is a hosted MCP server: no local process, ten tools, OAuth
+sign-in. It works in Claude, Claude Code, Cursor and VS Code, and it is in
+ChatGPT's plugin directory. Setup for each client is on the
+[YouTube MCP server page](https://bulktranscripts.co/youtube-mcp-server); the
+manifests live in [pratie/bulktranscripts-mcp](https://github.com/pratie/bulktranscripts-mcp).
 
 ```bash
 claude mcp add --transport http bulktranscripts https://bulktranscripts.co/mcp
